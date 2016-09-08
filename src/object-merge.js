@@ -116,8 +116,54 @@ function createOptions(opts) {
  */
 function objectMerge(shadows) {
     'use strict';
-    var objectForeach = require('object-foreach');
-    var cloneFunction = require('clone-function');
+    /**
+     * Executes a function on each of an objects own enumerable properties. The
+     *  callback function will receive three arguments: the value of the current
+     *  property, the name of the property, and the object being processed. This is
+     *  roughly equivalent to the signature for callbacks to
+     *  Array.prototype.forEach.
+     * @param {Object} obj The object to act on.
+     * @param {Function} callback The function to execute.
+     * @returns {Object} Returns the given object.
+     */
+    function objectForeach(obj, callback) {
+        "use strict";
+        Object.keys(obj).forEach(function (prop) {
+            callback(obj[prop], prop, obj);
+        });
+        return obj;
+    };
+
+    /*
+    License gpl-3.0 http://www.gnu.org/licenses/gpl-3.0-standalone.html
+    */
+    /*jslint
+        evil: true,
+        node: true
+    */
+
+    'use strict';
+    /**
+     * Clones non native JavaScript functions, or references native functions.
+     * @author <a href="mailto:matthewkastor@gmail.com">Matthew Kastor</a>
+     * @param {Function} func The function to clone.
+     * @returns {Function} Returns a clone of the non native function, or a
+     *  reference to the native function.
+     */
+    function cloneFunction(func) {
+        var out, str;
+        try {
+            str = func.toString();
+            if (/\[native code\]/.test(str)) {
+                out = func;
+            } else {
+                out = eval('(function(){return ' + str + '}());');
+            }
+        } catch (e) {
+            throw new Error(e.message + '\r\n\r\n' + str);
+        }
+        return out;
+    }
     // this is the queue of visited objects / properties.
     var visited = [];
     // various merge options
@@ -217,4 +263,3 @@ function objectMerge(shadows) {
     return objectMergeRecursor(shadows);
 }
 objectMerge.createOptions = createOptions;
-module.exports = objectMerge;

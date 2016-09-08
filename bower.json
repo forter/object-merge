@@ -1,0 +1,6 @@
+{
+     "name": "object-merge",
+     "description": "merge objects without array",
+     "version": "0.1.0",
+     "main": "src/object-merge.js"
+}
