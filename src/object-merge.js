@@ -59,7 +59,7 @@ function createOptions(opts) {
  * Merges JavaScript objects recursively without altering the objects merged.
  * @namespace Merges JavaScript objects recursively without altering the objects merged.
  * @author <a href="mailto:matthewkastor@gmail.com">Matthew Kastor</a>
- * @param {ObjectMergeOptions} [opts] An options object created by 
+ * @param {ObjectMergeOptions} [opts] An options object created by
  *  objectMerge.createOptions. Options must be specified as the first argument
  *  and must be an object created with createOptions or else the object will
  *  not be recognized as an options object and will be merged instead.
@@ -139,7 +139,7 @@ function objectMerge(shadows) {
         var out;
         var lastShadow = shadows[shadows.length - 1];
         if (lastShadow instanceof Array) {
-            out = [];
+            out = lastShadow;
         } else if (lastShadow instanceof Function) {
             try {
                 out = cloneFunction(lastShadow);
@@ -159,7 +159,7 @@ function objectMerge(shadows) {
         // if any of the current objects to process exist in the queue
         // then throw an error.
         shadows.forEach(function (item) {
-            if (item instanceof Object && visited.indexOf(item) > -1) {
+            if (item instanceof Object && !(item instanceof Array) && visited.indexOf(item) > -1) {
                 throw new Error('Circular reference error');
             }
         });
@@ -194,7 +194,7 @@ function objectMerge(shadows) {
         }
         // short circuits case where output would be a primitive value
         // anyway.
-        if (out instanceof Object && currentDepth <= options.depth) {
+        if (out instanceof Object && !(out instanceof Array) && currentDepth <= options.depth) {
             // only merges trailing objects since primitives would wipe out
             // previous objects, as in merging {a:'a'}, 'a', and {b:'b'}
             // would result in {b:'b'} so the first two arguments
